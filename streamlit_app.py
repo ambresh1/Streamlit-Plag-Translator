@@ -20,16 +20,6 @@ def getText(filename):
     for para in doc.paragraphs:
         fullText.append(para.text)
     return '\n'.join(fullText)
-
-# Def_01 applying process bar to function
-import sys
-
-def print_progress_bar(index, total, label):
-    n_bar = 50  # Progress bar width
-    progress = index / total
-    sys.stdout.write('\r')
-    sys.stdout.write(f"[{'=' * int(n_bar * progress):{n_bar}s}] {int(100 * progress)}%  {label}")
-    sys.stdout.flush()
     
 
 if torch.cuda.is_available():  
@@ -50,36 +40,47 @@ def btTranslator(docxfile):
   bigtext='''  '''
   for a in a1:
     bigtext=bigtext+'\n'+a
+    
   files=Document()
-  lt = LineTokenizer()
-  batch_size = 8
-  paragraphs = lt.tokenize(bigtext)   
-  translated_paragraphs = []
+  
+  a="/content/drive/MyDrive/Transformers Models/Helsinki-NLP/opus-mt-en-ru"
+  b="/content/drive/MyDrive/Transformers Models/Helsinki-NLP/opus-mt-ru-fr"
+  c="/content/drive/MyDrive/Transformers Models/Helsinki-NLP/opus-mt-fr-en"
+  # d="/content/drive/MyDrive/Transformers Models/Helsinki-NLP/opus-mt-es-en"
+  langs=[a,b,c]
+  text=bigtext
+  
+  for _,lang in zip(stqdm(langs),langs):
+        sleep(0.5)
+        # mname = '/content/drive/MyDrive/Transformers Models/opus-mt-en-hi-Trans Model'
+        tokenizer = MarianTokenizer.from_pretrained(lang)
+        model = MarianMTModel.from_pretrained(lang)
+        model.to(device)
+        lt = LineTokenizer()
+        batch_size = 8
+        paragraphs = lt.tokenize(bigtext)   
+        translated_paragraphs = []
+        
+      for _, paragraph in zip(stqdm(paragraphs),paragraphs):
+        # ######################################
+          sleep(0.5)
 
-
-  for _, paragraph in zip(stqdm(paragraphs),paragraphs):
-    # ######################################
-      #total=len(paragraphs)
-      #print_progress_bar(index, total, "Percentage Bar")
-      sleep(0.5)
-      #st.progress()
-      #do_something_slow()
-      
-
-    # ######################################
-      sentences = sent_tokenize(paragraph)
-      batches = math.ceil(len(sentences) / batch_size)     
-      translated = []
-      for i in range(batches):
-          sent_batch = sentences[i*batch_size:(i+1)*batch_size]
-          model_inputs = tokenizer(sent_batch, return_tensors="pt", padding=True, truncation=True, max_length=500).to(device)
-          with torch.no_grad():
-              translated_batch = model.generate(**model_inputs)
-          translated += translated_batch
-      translated = [tokenizer.decode(t, skip_special_tokens=True) for t in translated]
-      translated_paragraphs += [" ".join(translated)]
-      files.add_paragraph(translated)
-  translated_text = "\n".join(translated_paragraphs)
+        # ######################################
+          sentences = sent_tokenize(paragraph)
+          batches = math.ceil(len(sentences) / batch_size)     
+          translated = []
+          for i in range(batches):
+              sent_batch = sentences[i*batch_size:(i+1)*batch_size]
+              model_inputs = tokenizer(sent_batch, return_tensors="pt", padding=True, truncation=True, max_length=500).to(device)
+              with torch.no_grad():
+                  translated_batch = model.generate(**model_inputs)
+              translated += translated_batch
+          translated = [tokenizer.decode(t, skip_special_tokens=True) for t in translated]
+          translated_paragraphs += [" ".join(translated)]
+          #files.add_paragraph(translated)
+      translated_text = "\n".join(translated_paragraphs)
+      bigtext=translated_text
+  files.add_paragraph(bigtext) 
   #files=files.save("Translated.docx")
   #binary_output = BytesIO()
   #f=files.save(binary_output)
@@ -100,4 +101,4 @@ f3=btTranslator(datas).save(binary_output)
 
 st.sidebar.download_button(label='Download Translated File',file_name='Translated.docx', data=binary_output.getvalue()) 
 # st.text_area(label="",value=btTranslator(datas),height=100)
-Footer
+# Footer
