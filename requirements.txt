@@ -1,0 +1,12 @@
+nltk
+requires.io
+python-docx
+sentencepiece
+torch
+torchvision
+torchaudio
+transformers 
+ipywidgets 
+gradio
+sacremoses
+stqdm
