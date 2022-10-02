@@ -61,25 +61,26 @@ def btTranslator(docxfile):
         paragraphs = lt.tokenize(bigtext)   
         translated_paragraphs = []
         
-      for _, paragraph in zip(stqdm(paragraphs),paragraphs):
+        for _, paragraph in zip(stqdm(paragraphs),paragraphs):
+            
         # ######################################
-          sleep(0.5)
+            sleep(0.5)
 
         # ######################################
-          sentences = sent_tokenize(paragraph)
-          batches = math.ceil(len(sentences) / batch_size)     
-          translated = []
-          for i in range(batches):
-              sent_batch = sentences[i*batch_size:(i+1)*batch_size]
-              model_inputs = tokenizer(sent_batch, return_tensors="pt", padding=True, truncation=True, max_length=500).to(device)
-              with torch.no_grad():
-                  translated_batch = model.generate(**model_inputs)
-              translated += translated_batch
-          translated = [tokenizer.decode(t, skip_special_tokens=True) for t in translated]
-          translated_paragraphs += [" ".join(translated)]
-          #files.add_paragraph(translated)
-      translated_text = "\n".join(translated_paragraphs)
-      bigtext=translated_text
+            sentences = sent_tokenize(paragraph)
+            batches = math.ceil(len(sentences) / batch_size)     
+            translated = []
+            for i in range(batches):
+                sent_batch = sentences[i*batch_size:(i+1)*batch_size]
+                model_inputs = tokenizer(sent_batch, return_tensors="pt", padding=True, truncation=True, max_length=500).to(device)
+                with torch.no_grad():
+                    translated_batch = model.generate(**model_inputs)
+                    translated += translated_batch
+                translated = [tokenizer.decode(t, skip_special_tokens=True) for t in translated]
+                translated_paragraphs += [" ".join(translated)]
+                #files.add_paragraph(translated)
+        translated_text = "\n".join(translated_paragraphs)
+        bigtext=translated_text
   files.add_paragraph(bigtext) 
   #files=files.save("Translated.docx")
   #binary_output = BytesIO()
