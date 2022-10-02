@@ -28,10 +28,10 @@ else:
   dev = "cpu" 
 device = torch.device(dev)
  
-mname = 'Helsinki-NLP/opus-mt-en-hi'
-tokenizer = MarianTokenizer.from_pretrained(mname)
-model = MarianMTModel.from_pretrained(mname)
-model.to(device)
+# mname = 'Helsinki-NLP/opus-mt-en-hi'
+# tokenizer = MarianTokenizer.from_pretrained(mname)
+# model = MarianMTModel.from_pretrained(mname)
+# model.to(device)
 
 #@st.cache
 def btTranslator(docxfile):
@@ -43,10 +43,10 @@ def btTranslator(docxfile):
     
   files=Document()
   
-  a="/content/drive/MyDrive/Transformers Models/Helsinki-NLP/opus-mt-en-ru"
-  b="/content/drive/MyDrive/Transformers Models/Helsinki-NLP/opus-mt-ru-fr"
-  c="/content/drive/MyDrive/Transformers Models/Helsinki-NLP/opus-mt-fr-en"
-  # d="/content/drive/MyDrive/Transformers Models/Helsinki-NLP/opus-mt-es-en"
+  a="Helsinki-NLP/opus-mt-en-ru"
+  b="Helsinki-NLP/opus-mt-ru-fr"
+  c="Helsinki-NLP/opus-mt-fr-en"
+  # d="Helsinki-NLP/opus-mt-es-en"
   langs=[a,b,c]
   text=bigtext
   
